@@ -4,27 +4,30 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Map.Entry;
 
 public class Day1 {
     final static ArrayList<String> input = new ArrayList<>();
     final static String path = "day1/input.txt";
-    static HashMap<String, Integer> stringToInt = new HashMap<String, Integer>();
+    static HashMap<String, String> stringToInt = new HashMap<String, String>();
+    static int problem = 1;
 
     public static void main(String[] args) {
-        stringToInt.put("one", 1);
-        stringToInt.put("two", 2);
-        stringToInt.put("three", 3);
-        stringToInt.put("four", 4);
-        stringToInt.put("five", 5);
-        stringToInt.put("six", 6);
-        stringToInt.put("seven", 7);
-        stringToInt.put("eight", 8);
-        stringToInt.put("nine", 9);
+        // "twoone" != tw1 == 21
+        stringToInt.put("one", "o1e");
+        stringToInt.put("two", "t2o");
+        stringToInt.put("three", "t3");
+        stringToInt.put("four", "4");
+        stringToInt.put("five", "5e");
+        stringToInt.put("six", "6");
+        stringToInt.put("seven", "7");
+        stringToInt.put("eight", "8t");
+        stringToInt.put("nine", "9");
 
         readInput();
-        problem1();
+        problem1(input);
         problem2();
     }
 
@@ -42,14 +45,13 @@ public class Day1 {
         }
     }
 
-    public static void problem1() {
+    public static void problem1(ArrayList<String> input1) {
         int totalSum = 0;
 
-        for (String line : input) {
+        for (String line : input1) {
             int firstDigit = 0;
             int lastDigit = 0;
             boolean hasChanged = false;
-
             for (int i = 0; i != line.length(); i++) {
                 char currentChar = line.charAt(i);
                 if (Character.isDigit(currentChar)) {
@@ -62,65 +64,23 @@ public class Day1 {
             }
             totalSum += 10 * firstDigit + lastDigit;
         }
-        System.out.println("Problem 1");
+        System.out.println("Problem " + problem);
         System.out.println("Total sum: " + totalSum);
         System.out.println("______________________");
     }
 
     public static void problem2() {
-        int totalSum = 0;
-
+        ArrayList<String> temp = new ArrayList<>();
         for (String line : input) {
-            int firstDigit = 0;
-            int lastDigit = 0;
-            boolean hasChanged = false;
 
-            for (int i = line.length() - 1; i > -1; i--) {
-                char currentChar = line.charAt(i);
-                if (!hasChanged) {
-                    if (Character.isDigit(currentChar)) {
-                        lastDigit = Character.getNumericValue(currentChar);
-                        hasChanged = true;
-                    } else {
-                        for (int j = line.length(); j >= i; j--) {
-                            String isNumber = line.substring(i, j);
-                            if (stringToInt.containsKey(isNumber)) {
-                                lastDigit = stringToInt.get(isNumber);
-                                hasChanged = true;
-                                break;
-                            }
-
-                        }
-                    }
-                }
+            for (Map.Entry<String, String> entry : stringToInt.entrySet()) {
+                String current = entry.getKey();
+                String newCurrent = entry.getValue();
+                line = line.replaceAll(current, newCurrent);
             }
-            hasChanged = false;
-            for (int i = 0; i != line.length(); i++) {
-                char currentChar = line.charAt(i);
-                if (!hasChanged) {
-                    if (Character.isDigit(currentChar)) {
-                        firstDigit = Character.getNumericValue(currentChar);
-                        hasChanged = true;
-                    } else {
-                        for (int j = 0; j <= i; j++) {
-                            String isNumber = line.substring(j, i + 1);
-                            if (stringToInt.containsKey(isNumber)) {
-                                firstDigit = stringToInt.get(isNumber);
-                                hasChanged = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            firstDigit *= 10;
-            int result = firstDigit + lastDigit;
-            totalSum += result;
-
+            temp.add(line);
         }
-        System.out.println("Problem 2");
-        System.out.println("Total sum: " + totalSum);
+        problem++;
+        problem1(temp);
     }
-
 }
