@@ -13,7 +13,7 @@ public class Day3 {
 
     public static void main(String[] args) {
         readInput();
-        // problem1();
+        problem1();
         problem2();
     }
 
@@ -36,36 +36,34 @@ public class Day3 {
         for (int lineIndex = 0; lineIndex != input.size(); lineIndex++) {
             String line = input.get(lineIndex);
             for (int charIndex = 0; charIndex != line.length(); charIndex++) {
+
                 char currentChar = line.charAt(charIndex);
 
                 if (Character.isDigit(currentChar)) {
-                    if (isAdjacentToSymbol(lineIndex, charIndex)) {
+                    if (hasSymbol(lineIndex, charIndex)) {
                         StringBuilder local = new StringBuilder();
                         int firstIndex = 0;
                         int lastIndex = 0;
-                        for(int index = charIndex-1; index != -1; index--){
-                            if(Character.isDigit(line.charAt(index))){
+                        for (int index = charIndex - 1; index != -1; index--) {
+                            if (Character.isDigit(line.charAt(index))) {
                                 firstIndex = index;
-                            }
-                            else{
-                                firstIndex= index+1;
+                            } else {
+                                firstIndex = index + 1;
                                 break;
                             }
                         }
-                        for(int index = charIndex+1; index != line.length(); index++){
-                            if(Character.isDigit(line.charAt(index))){
+                        for (int index = charIndex + 1; index != line.length(); index++) {
+                            if (Character.isDigit(line.charAt(index))) {
                                 lastIndex = index;
-                            }
-                            else{
-                                lastIndex = index-1;
+                            } else {
+                                lastIndex = index - 1;
                                 break;
                             }
                         }
-                        for(int index = firstIndex; index <= lastIndex; index++){
+                        for (int index = firstIndex; index <= lastIndex; index++) {
                             local.append(line.charAt(index));
                         }
                         charIndex = lastIndex;
-                        System.out.println(local.toString());
                         sum += Integer.parseInt(local.toString());
 
                     }
@@ -75,47 +73,23 @@ public class Day3 {
         System.out.println("Sum of all part numbers: " + sum);
     }
 
-
-
-    private static boolean isAdjacentToSymbol(int lineIndex, int charIndex) {
+    private static boolean hasSymbol(int lineIndex, int charIndex) {
         String symbols = ".1234567890";
-        if(lineIndex == 0){
-            if(charIndex == 0){
-                return symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) == -1;
-            }
-            else if(charIndex == input.get(lineIndex).length() - 1){
-                return symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) == -1;
-            }
-            else{
-                return symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) == -1;
-            }
-   
-        }
-        else if(lineIndex == input.size()-1){
-            if(charIndex == 0){
-                return symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) ==-1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) == -1;
-            }
-            else if(charIndex == input.get(lineIndex).length() - 1){
-                return symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) == -1;
-            }
-            else{
-                return symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) ==-1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) == -1;
-            }
-        }
-        else{
-            if(charIndex ==0){
-                return symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) == -1;
-            }
-            else if(charIndex == input.get(lineIndex).length() - 1){
-                return symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) == -1;
-            }
-            else{
-                return symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) ==-1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) == -1 || symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) == -1 || symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) == -1 || symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) == -1;
+        int[][] pos = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } };
 
+        for (int[] p : pos) {
+            int newLineIndex = lineIndex + p[0];
+            int newCharIndex = charIndex + p[1];
+
+            if (newLineIndex >= 0 && newLineIndex < input.size() &&
+                    newCharIndex >= 0 && newCharIndex < input.get(newLineIndex).length()) {
+                if (symbols.indexOf(input.get(newLineIndex).charAt(newCharIndex)) == -1) {
+                    return true;
+                }
             }
-            
-            
         }
+
+        return false;
     }
 
     public static void problem2() {
@@ -125,227 +99,52 @@ public class Day3 {
             for (int charIndex = 0; charIndex != line.length(); charIndex++) {
                 char currentChar = line.charAt(charIndex);
                 if (currentChar == '*') {
-                    Set<Integer> result = isAdjacentToNumber(lineIndex, charIndex);
-                    if(result.size() > 1){
-                        System.out.println(result);
-                        product += result.stream().reduce(1, (a,b) -> a*b);
+                    Set<Integer> result = hasNumber(lineIndex, charIndex);
+                    if (result.size() > 1) {
+                        product += result.stream().reduce(1, (a, b) -> a * b);
                     }
                 }
             }
         }
-        System.out.println(product);
+        System.out.println("Product of all: " + product);
     }
-    private static Set<Integer> isAdjacentToNumber(int lineIndex, int charIndex) {
+
+    private static Set<Integer> hasNumber(int lineIndex, int charIndex) {
         Set<Integer> adjacentNumbers = new HashSet<>();
         String symbols = "1234567890";
-        if(lineIndex ==0){
-            
-            if(charIndex == 0){
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex+1)));
-                }
-                
-            }
-            else if(charIndex == input.get(lineIndex).length() - 1){
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex+1)));
-                }
-                
+        int[][] pos = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } };
 
-            }
-            else{
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex+1)));
-                }
-                
+        for (int[] p : pos) {
+            int newRow = lineIndex + p[0];
+            int newCol = charIndex + p[1];
 
+            if (newRow >= 0 && newRow < input.size() && newCol >= 0 && newCol < input.get(newRow).length()) {
+                char symbol = input.get(newRow).charAt(newCol);
+                if (symbols.indexOf(symbol) != -1) {
+                    adjacentNumbers.add(getNumber(newCol, input.get(newRow)));
+                }
             }
         }
-        else if(lineIndex == input.size()-1){
-            
 
-            if(charIndex == 0){
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex-1)));
-                }
-                //fel
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                
-
-            }
-            else if(charIndex == input.get(lineIndex).length() - 1){
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-
-            }
-            else{
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex-1)));
-                }
-
-            }
-        }
-        else{
-            if(charIndex == 0){
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                
-
-            }
-            else if(charIndex == input.get(lineIndex).length() - 1){
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex-1)));
-                }
-
-            }
-            else{
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex-1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex-1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex+1)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex+1, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex+1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex+1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex-1).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex-1)));
-                }
-                if(symbols.indexOf(input.get(lineIndex).charAt(charIndex)) != -1){
-                    adjacentNumbers.add(numberFromIndex(charIndex, input.get(lineIndex)));
-                }
-
-            }
-
-        }
         return adjacentNumbers;
 
     }
-    static int numberFromIndex(int j, String list) {
-		int startIndex = j;
-		int endIndex = j;
-		while (startIndex > 0 && Character.isDigit(list.charAt(startIndex - 1))) {
-			startIndex--;
-		}
-		while (endIndex < list.length() - 1 && Character.isDigit(list.charAt(endIndex + 1))) {
-			endIndex++;
-		}
 
-		String wholeNUmber = "";
-		for (int k = startIndex; k <= endIndex; k++) {
-			wholeNUmber += list.charAt(k);
-		}
-		return Integer.valueOf(wholeNUmber);
-	}
-    
-    
-        
+    static int getNumber(int index, String list) {
+        int firstIndex = index;
+        int lastIndex = index;
+        while (firstIndex > 0 && Character.isDigit(list.charAt(firstIndex - 1))) {
+            firstIndex--;
+        }
+        while (lastIndex < list.length() - 1 && Character.isDigit(list.charAt(lastIndex + 1))) {
+            lastIndex++;
+        }
+
+        StringBuilder number = new StringBuilder();
+        for (int k = firstIndex; k <= lastIndex; k++) {
+            number.append(list.charAt(k));
+        }
+        return Integer.valueOf(number.toString());
     }
 
-
+}
