@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 public class Day4 {
     final static List<String> input = new ArrayList<>();
@@ -37,27 +38,15 @@ public class Day4 {
         int ans = 0;
         for (String s : input) {
             String[] parts = s.split(":");
-            String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
             String[] winningNumbers = parts[1].split("\\|")[0].trim().split(" ");
+            String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
 
             Set<String> winningSet = new HashSet<>(Arrays.asList(winningNumbers));
-            int localAns = 0;
+            Set<String> ticketSet = new HashSet<>(Arrays.asList(cardNumbers));
 
-            for (String number : cardNumbers) {
-                if (winningSet.contains(number.trim())) {
-                    localAns++;
-                }
-            }
+            winningSet.retainAll(ticketSet);
 
-            if (localAns == 1) {
-                ans += 1;
-            } else if (localAns > 1) {
-                int local = 1;
-                for (int i = 1; i < localAns; i++) {
-                    local *= 2;
-                }
-                ans += local;
-            }
+            ans += (int) (winningSet.size() == 0 ? 0 : Math.pow(2, winningSet.size() - 1));
         }
         System.out.println(ans);
     }
@@ -68,17 +57,16 @@ public class Day4 {
 
         for (int i = 0; i < input.size(); i++) {
             String[] parts = input.get(i).split(":");
-            String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
             String[] winningNumbers = parts[1].split("\\|")[0].trim().split(" ");
+            String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
 
             Set<String> winningSet = new HashSet<>(Arrays.asList(winningNumbers));
+            Set<String> ticketSet = new HashSet<>(Arrays.asList(cardNumbers));
 
-            int localAns = 0;
-            for (String number : cardNumbers) {
-                if (winningSet.contains(number.trim())) {
-                    localAns++;
-                }
-            }
+            winningSet.retainAll(ticketSet);
+
+            int localAns = winningSet.size();
+
             for (int newIndex = i + 1; newIndex < input.size(); newIndex++) {
                 if (localAns <= 0) {
                     break;
@@ -87,11 +75,7 @@ public class Day4 {
                 localAns--;
             }
         }
-        int sum = 0;
-        for (int i : ans) {
-            sum += i;
-        }
-
+        int sum = IntStream.of(ans).sum();
         System.out.println(sum);
     }
 }
