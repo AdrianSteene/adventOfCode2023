@@ -37,18 +37,10 @@ public class Day4 {
     private static void problem1() {
         int ans = 0;
         for (String s : input) {
-            String[] parts = s.split(":");
-            String[] winningNumbers = parts[1].split("\\|")[0].trim().split(" ");
-            String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
-
-            Set<String> winningSet = new HashSet<>(Arrays.asList(winningNumbers));
-            Set<String> ticketSet = new HashSet<>(Arrays.asList(cardNumbers));
-
-            winningSet.retainAll(ticketSet);
-
-            ans += (int) (winningSet.size() == 0 ? 0 : Math.pow(2, winningSet.size() - 1));
+            int winners = winners(s);
+            ans += (int) (winners == 0 ? 0 : Math.pow(2, winners - 1));
         }
-        System.out.println(ans);
+        System.out.println("Part one: " + ans);
     }
 
     public static void problem2() {
@@ -56,16 +48,8 @@ public class Day4 {
         Arrays.fill(ans, 1);
 
         for (int i = 0; i < input.size(); i++) {
-            String[] parts = input.get(i).split(":");
-            String[] winningNumbers = parts[1].split("\\|")[0].trim().split(" ");
-            String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
 
-            Set<String> winningSet = new HashSet<>(Arrays.asList(winningNumbers));
-            Set<String> ticketSet = new HashSet<>(Arrays.asList(cardNumbers));
-
-            winningSet.retainAll(ticketSet);
-
-            int localAns = winningSet.size();
+            int localAns = winners(input.get(i));
 
             for (int newIndex = i + 1; newIndex < input.size(); newIndex++) {
                 if (localAns <= 0) {
@@ -76,6 +60,17 @@ public class Day4 {
             }
         }
         int sum = IntStream.of(ans).sum();
-        System.out.println(sum);
+        System.out.println("Part 2. " + sum);
+    }
+
+    public static int winners(String input) {
+        String[] parts = input.split(":");
+        String[] winningNumbers = parts[1].split("\\|")[0].trim().split(" ");
+        String[] cardNumbers = parts[1].split("\\|")[1].trim().split(" ");
+        Set<String> winningSet = new HashSet<>(Arrays.asList(winningNumbers));
+        Set<String> ticketSet = new HashSet<>(Arrays.asList(cardNumbers));
+
+        winningSet.retainAll(ticketSet);
+        return winningSet.size();
     }
 }
