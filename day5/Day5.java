@@ -12,6 +12,7 @@ public class Day5 {
     public static void main(String[] args) {
         readInput();
         problem1();
+        problem2();
     }
 
     public static void readInput() {
@@ -33,7 +34,6 @@ public class Day5 {
         ArrayList<String> seeds = new ArrayList<String>();
         ArrayList<String> tempSeeds = new ArrayList<String>();
         ArrayList<String> removeSeeds = new ArrayList<String>();
-
 
         for (String s : input) {
             if (row == 0) {
@@ -60,7 +60,7 @@ public class Day5 {
                 for (String seed : seeds) {
                     if (!removeSeeds.contains(seed))
                         tempSeeds.add(seed);
-                        removeSeeds.remove(seed);
+                    removeSeeds.remove(seed);
                 }
                 seeds = new ArrayList<String>(tempSeeds);
                 tempSeeds = new ArrayList<String>();
@@ -69,9 +69,60 @@ public class Day5 {
 
         }
         System.out.println("__________________");
-        seeds.forEach((e) -> System.out.println(e));
-        System.out.println(String.valueOf(findMin(seeds)));
+        System.out.println("Answer 1: " + String.valueOf(findMin(seeds)));
 
+    }
+
+    public static void problem2() {
+        String[] line1 = input.get(0).split(" ");
+        ArrayList<long[]> seedRanges = new ArrayList<>();
+        Long minSeeds = Long.MAX_VALUE;
+
+        for (int size = 0; size < line1.length; size += 2) {
+            long[] temp = new long[2];
+            temp[0] = Long.parseLong(line1[size]);
+            temp[1] = Long.parseLong(line1[size + 1]);
+            seedRanges.add(temp);
+        }
+
+        for (long[] seedRange : seedRanges) {
+            long startRange = seedRange[0];
+            long rangeLength = seedRange[1];
+
+            for (long seed = startRange; seed < startRange + rangeLength; seed++) {
+                Long currentSeed = findEnd(seed);
+                minSeeds = Math.min(minSeeds, currentSeed);
+            }
+            System.out.println("Progress: " + ((seedRanges.indexOf(seedRange) + 1) / seedRanges.size()) * 100);
+        }
+
+        System.out.println("__________________");
+        System.out.println("Answer 2: " + minSeeds);
+    }
+
+    public static long findEnd(long seed) {
+        boolean hasChanged = true;
+        for (int i = 1; i < input.size(); i++) {
+            String[] line = input.get(i).split(" ");
+            if (line.length == 3) {
+                long start = Long.parseLong(line[1]);
+                long end = Long.parseLong(line[0]);
+                long range = Long.parseLong(line[2]);
+
+                if (seed >= start && seed < start + range) {
+                    if (hasChanged) {
+                        seed = (seed - start) + end;
+                        hasChanged = false;
+                    }
+                }
+            }
+
+            else {
+                hasChanged = true;
+            }
+
+        }
+        return seed;
     }
 
     public static Long findMin(ArrayList<String> seeds) {
